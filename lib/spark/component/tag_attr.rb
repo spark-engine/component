@@ -29,15 +29,15 @@ module Spark
       end
 
       def aria(*args)
-        self[:aria] ||= Attr.new(*args, prefix: :aria)
+        self[:aria] ||= Component::Attr.new(*args, prefix: :aria)
       end
 
       def data(*args)
-        self[:data] ||= Attr.new(*args, prefix: :data)
+        self[:data] ||= Component::Attr.new(*args, prefix: :data)
       end
 
       def classname(*args, base: nil)
-        self[:class] ||= Classname.new(*args, base: base)
+        self[:class] ||= Component::Classname.new(*args, base: base)
       end
     end
   end
