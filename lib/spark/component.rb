@@ -1,8 +1,20 @@
 require "spark/component/version"
+require "spark/component/element"
+
+if defined?(ActionView::Component::Base)
+  require "spark/component/integration/action_view_component"
+end
 
 module Spark
   module Component
-    class Error < StandardError; end
-    # Your code goes here...
+    def self.included(base)
+      base.include Spark::Component::Element unless base < Spark::Component::Element
+
+      # If an Integration is defeind include its modules if the component extends
+      # the defined base class
+      return unless defined?(Spark::Component::Integration)
+
+      base.include(Spark::Component::Integration) if base < Spark::Component::Integration.base_class
+    end
   end
 end
