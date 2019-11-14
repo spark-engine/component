@@ -17,8 +17,15 @@ module Spark
         end
       end
 
-      def initialize(attributes = nil)
-        initialize_attributes(attributes)
+      def initialize(attrs = nil)
+        # Extract core element attributes
+        unless attrs.nil? || attrs.empty?
+          @_parent      = attrs.delete(:_parent)
+          @_block       = attrs.delete(:_block)
+          @view_context = attrs.delete(:_view)
+        end
+
+        initialize_attributes(attrs)
         initialize_elements
         super
       end
@@ -26,7 +33,7 @@ module Spark
       def render_self
         return @content unless @content.nil?
 
-        @content = render_block(view_context, &_block)
+        @content = render_block(@view_context, &_block)
         validate! if defined?(ActiveModel::Validations)
         @content
       end
@@ -66,17 +73,17 @@ module Spark
       end
 
       # Override the default value for an element's attribute(s)
-      def set_element_attr_default(element, attrs = {})
-        element_attr_default[element] = attrs
+      def set_element_attribute_default(element, attrs = {})
+        element_attribute_default[element] = attrs
       end
 
-      def element_attr_default
-        @element_attr_default ||= {}
+      def element_attribute_default
+        @element_attribute_default ||= {}
       end
 
       # Merge user defined attributes with the overriden attributes of an element
-      def merge_element_attr_default(name, attributes)
-        attrs = element_attr_default[name]
+      def merge_element_attribute_default(name, attributes)
+        attrs = element_attribute_default[name]
         attributes = attrs.merge(attributes || {}) unless attrs.nil? || attrs.empty?
         attributes
       end
@@ -154,12 +161,15 @@ module Spark
           define_method_if_able(name) do |attributes = nil, &block|
             return get_element_variable(multiple ? plural : name) unless block || attributes
 
-            attributes = merge_element_attr_default(name, attributes)
+            attributes ||= {}
+            attributes = merge_element_attribute_default(name, attributes)
+            attributes.merge!(
+              _parent: self,
+              _block: block,
+              _view: view_context
+            )
 
             element = klass.new(attributes)
-            element._parent = self
-            element._block = block
-            element.view_context = view_context
 
             # If element supports multiple instances, inject instance
             # into array for later enumeration
@@ -183,6 +193,7 @@ module Spark
         # If an element extends a component, extend that component's class and include the necessary modules
         def extend_class(component, &config)
           base = Class.new(component || Spark::Component::Element::Base, &config)
+          # base.include(Spark::Component::Element)
           define_model_name(base) if defined?(ActiveModel)
 
           return base unless component
@@ -221,13 +232,22 @@ module Spark
       # Base class for non-component elements
       class Base
         include ActiveModel::Validations if defined?(ActiveModel)
-        include Spark::Component::Element
 
-        def initialize(attributes)
-          initialize_attributes(attributes)
+        def initialize(attrs = nil)
+          # Extract core element attributes
+          unless attrs.nil? || attrs.empty?
+            @_parent      = attrs.delete(:_parent)
+            @_block       = attrs.delete(:_block)
+            @view_context = attrs.delete(:_view)
+          end
+
+          initialize_attributes(attrs)
           initialize_elements
         end
+
+        include Spark::Component::Element
       end
     end
   end
 end
+

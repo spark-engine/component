@@ -5,3 +5,4 @@ class AttributeComponentExtended < AttributeComponent
     super
   end
 end
+

@@ -33,8 +33,8 @@ require "spark/component/tag_attr"
 #
 #  Attributes can also be accessed with a helper method
 #
-#    some_instance.attr(:label)
-#    some_instance.attr(:size)
+#    some_instance.attribute(:label)
+#    some_instance.attribute(:size)
 #
 #  Extending a class will extend its attributes and their defaults.
 #
@@ -66,17 +66,16 @@ module Spark
           value = attrs[name] || (!default.nil? ? default : nil)
           if set?(value)
             instance_variable_set(:"@#{name}", value)
-            attributes[name] = value
           end
         end
       end
 
-      def attr(name)
-        instance_variable_get(:"@#{name}")
+      def attribute(name)
+        attributes[name]
       end
 
       def attributes
-        @attributes ||= {}
+        attr_hash(*self.class.attributes.keys)
       end
 
       # Accepts an array of instance variables and returns
@@ -90,7 +89,7 @@ module Spark
       #
       # Example use case:
       #
-      # tag.div(data: attr_hash(:remote, :method)) { ... }
+      # <div data="<%= attr_hash(:remote, :method)) %>">
       #
       def attr_hash(*args)
         args.each_with_object({}) do |name, obj|
@@ -195,3 +194,4 @@ module Spark
     end
   end
 end
+

@@ -2,6 +2,7 @@
 
 module Spark
   module Component
-    VERSION = "1.0.0-alpha".freeze
+    VERSION = "1.0.0.pre.alpha.1"
   end
 end
+

@@ -21,3 +21,4 @@ class ElementComponent < ActionView::Component::Base
     super
   end
 end
+

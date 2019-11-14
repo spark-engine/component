@@ -20,15 +20,21 @@ module Spark
         @lookup_context ||= view_context.lookup_context
         @view_flow ||= view_context.view_flow
         @virtual_path ||= virtual_path
+        @variant = @lookup_context.variants.first
+        old_current_template = @current_template
+        @current_template = self
 
         # Pass self as a block parameter
         @content = render_block(view_context, &block) if block_given?
         validate!
-        call
+
+        send(self.class.call_method_name(@variant))
+      ensure
+        @current_template = old_current_template
       end
 
       def render_self
-        render_in(view_context, &_block)
+        render_in(@view_context, &@_block)
       end
 
       # Override class methods for components
@@ -64,3 +70,4 @@ module Spark
     end
   end
 end
+

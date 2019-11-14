@@ -20,3 +20,4 @@ class WithElements < ActionView::Component::Base
     super
   end
 end
+

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spark/component/version"
 require "spark/component/element"
 
@@ -18,3 +20,4 @@ module Spark
     end
   end
 end
+
