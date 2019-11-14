@@ -8,7 +8,6 @@ module Spark
       class Error < StandardError; end
 
       def self.included(base)
-        base.include(Spark::Component::Attribute)
         base.extend(Spark::Component::Element::ClassMethods)
 
         %i[_parent _block view_context].each do |name|
@@ -17,16 +16,23 @@ module Spark
         end
       end
 
+      # Initialize method on components must call super
       def initialize(attrs = nil)
         # Extract core element attributes
+        # Ensure that elements have references to their:
+        #  - parent: enables elements to interact with their parent component
+        #  - block: used in render_self
+        #  - view_context, sets the view context for an element (in Rails)
+        #
         unless attrs.nil? || attrs.empty?
           @_parent      = attrs.delete(:_parent)
           @_block       = attrs.delete(:_block)
           @view_context = attrs.delete(:_view)
         end
 
-        initialize_attributes(attrs)
         initialize_elements
+
+        # Call Attributes.initialze
         super
       end
 
@@ -193,7 +199,6 @@ module Spark
         # If an element extends a component, extend that component's class and include the necessary modules
         def extend_class(component, &config)
           base = Class.new(component || Spark::Component::Element::Base, &config)
-          # base.include(Spark::Component::Element)
           define_model_name(base) if defined?(ActiveModel)
 
           return base unless component
@@ -232,19 +237,7 @@ module Spark
       # Base class for non-component elements
       class Base
         include ActiveModel::Validations if defined?(ActiveModel)
-
-        def initialize(attrs = nil)
-          # Extract core element attributes
-          unless attrs.nil? || attrs.empty?
-            @_parent      = attrs.delete(:_parent)
-            @_block       = attrs.delete(:_block)
-            @view_context = attrs.delete(:_view)
-          end
-
-          initialize_attributes(attrs)
-          initialize_elements
-        end
-
+        include Spark::Component::Attribute
         include Spark::Component::Element
       end
     end

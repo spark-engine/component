@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spark/component/version"
+require "spark/component/attribute"
 require "spark/component/element"
 
 if defined?(ActionView::Component::Base)
@@ -10,7 +11,8 @@ end
 module Spark
   module Component
     def self.included(base)
-      base.include Spark::Component::Element unless base < Spark::Component::Element
+      base.include Spark::Component::Attribute
+      base.include Spark::Component::Element
 
       # If an Integration is defeind include its modules if the component extends
       # the defined base class

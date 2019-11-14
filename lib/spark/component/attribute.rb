@@ -58,6 +58,10 @@ module Spark
         base.extend(ClassMethods)
       end
 
+      def initialize(*attrs)
+        initialize_attributes(*attrs)
+      end
+
       # Assign instance variables for attributes defined by the class
       def initialize_attributes(attrs = nil)
         attrs ||= {}

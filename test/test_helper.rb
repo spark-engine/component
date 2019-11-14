@@ -11,6 +11,9 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path("config/environment.rb", __dir__)
 require "rails/test_help"
 
+# Print full backtrace
+Rails.backtrace_cleaner.remove_silencers!
+
 def get_html(result, css: "*")
   result = Nokogiri::HTML(result).css("body > *") if result.is_a?(String)
   result.css(css).first.to_html.strip
