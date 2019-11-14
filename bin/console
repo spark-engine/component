@@ -13,4 +13,3 @@ require "spark/component"
 
 require "irb"
 IRB.start(__FILE__)
-

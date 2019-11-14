@@ -15,4 +15,3 @@ class AttributeComponent < ActionView::Component::Base
     super
   end
 end
-

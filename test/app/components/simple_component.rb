@@ -5,4 +5,3 @@ class SimpleComponent < ActionView::Component::Base
     super
   end
 end
-

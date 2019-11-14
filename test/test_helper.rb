@@ -18,4 +18,3 @@ def get_html(result, css: "*")
   result = Nokogiri::HTML(result).css("body > *") if result.is_a?(String)
   result.css(css).first.to_html.strip
 end
-

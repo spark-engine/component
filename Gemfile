@@ -7,4 +7,3 @@ gemspec
 
 gem "pry-byebug", group: %i[development test]
 gem "rails", "~> 6.0.0"
-

@@ -5,4 +5,3 @@ module Spark
     VERSION = "1.0.0.pre.alpha.1"
   end
 end
-
