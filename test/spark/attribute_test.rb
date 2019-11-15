@@ -48,6 +48,8 @@ module Spark
         klass.attribute :foo, bar: :baz
 
         klass_instance = klass.new(foo: "filled")
+        assert_equal("filled", klass_instance.attribute(:foo))
+        assert_equal(:baz, klass_instance.attribute(:bar))
         assert_equal({ foo: "filled", bar: :baz }, klass_instance.attributes)
       end
 

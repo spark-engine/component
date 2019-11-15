@@ -17,6 +17,12 @@ module Spark
       assert_equal %(<div class="block"><span>content</span></div>), get_html(response.body, css: ".block")
     end
 
+    def test_element_parent
+      component = WithElements.new
+      el        = component.simple_block { 'hi' }
+      assert_equal component, el._parent
+    end
+
     def test_render_element_multiple
       get "/multi"
       assert_response :success
