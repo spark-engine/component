@@ -19,7 +19,7 @@ module Spark
 
     def test_element_parent
       component = WithElements.new
-      el        = component.simple_block { 'hi' }
+      el        = component.simple_block { "hi" }
       assert_equal component, el._parent
     end
 

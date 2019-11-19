@@ -137,7 +137,7 @@ module Spark
         def element(name, multiple: false, component: nil, &config)
           plural_name = name.to_s.pluralize.to_sym if multiple
           klass = extend_class(component, &config)
-          elements[name] = { multiple: plural_name }
+          elements[name] = { multiple: plural_name, class: klass }
 
           define_element(name: name, plural: plural_name, multiple: multiple, klass: klass)
         end
