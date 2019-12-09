@@ -98,7 +98,11 @@ module Spark
       def attr_hash(*args)
         args.each_with_object({}) do |name, obj|
           val = instance_variable_get(:"@#{name}")
-          obj[name] = val unless val.nil?
+          next if val.nil?
+
+          # Symbolize `true` values to ensure the value is set in tag attributes
+          # This helps tags write `data-foo="true"` instead of `data-foo`
+          obj[name] = val === true ? :true : val
         end
       end
 
