@@ -5,7 +5,7 @@ require File.expand_path("boot", __dir__)
 require "active_model/railtie"
 require "action_controller/railtie"
 require "action_view/railtie"
-require "action_view/component/base"
+require "action_view/component"
 require "sprockets/railtie"
 require "slim"
 require "pry-byebug"

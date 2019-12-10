@@ -223,8 +223,9 @@ module Spark
 
         # Prevent an element method from overwriting an existing method
         def define_method_if_able(method_name, &block)
-          # Select instance methods but not those which are intance methods received by extending a class
-          methods = (instance_methods - superclass.instance_methods(false))
+          # Protect instance methods which are crucial to components and elements
+          # Consider adding ActionView::Component::Base core instance methods to reserved list
+          methods = [Element, Attribute, superclass].map { |c| c.instance_methods(false) }.flatten
 
           if methods.include?(method_name.to_sym)
             raise(Element::Error, "Method '#{method_name}' already exists.")
