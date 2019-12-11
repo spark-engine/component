@@ -52,6 +52,10 @@ module Spark
         render_self
       end
 
+      def present?
+        !self.yield.nil?
+      end
+
       private
 
       # Create instance variables for each element
