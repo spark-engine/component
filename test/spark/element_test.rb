@@ -37,6 +37,7 @@ module Spark
       assert_response :success
       assert_equal %(<div class="attr">bar</div>), get_html(response.body, css: ".attr")
       assert_equal %(<div class="method">success</div>), get_html(response.body, css: ".method")
+      assert_equal %(<div class="content">test</div>), get_html(response.body, css: ".content")
     end
 
     def test_render_element_with_validation_exception

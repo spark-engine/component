@@ -2,8 +2,9 @@ div
   - if simple_block.present?
     .block= simple_block.yield
   - if with_config.present?
-    .attr = with_config.attribute_foo
+    .attr = with_config.attribute(:foo)
     .method = with_config.method_test
+    .content = with_config.yield
   - if with_validation.present?
     = with_validation.yield
   - unless multis.empty?

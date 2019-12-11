@@ -80,7 +80,7 @@ module Spark
         klass.attribute :a, b: true
 
         klass_instance = klass.new(a: 1)
-        assert_equal({ a: 1, b: :true }, klass_instance.attr_hash(:a, :b, :c, :id, :data))
+        assert_equal({ a: 1, b: "true" }, klass_instance.attr_hash(:a, :b, :c, :id, :data))
       end
 
       def test_tag_attrs_assignable_by_attributes

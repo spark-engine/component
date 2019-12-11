@@ -100,9 +100,9 @@ module Spark
           val = instance_variable_get(:"@#{name}")
           next if val.nil?
 
-          # Symbolize `true` values to ensure the value is set in tag attributes
+          # Stringify true values to ensure the value is set in tag attributes
           # This helps tags write `data-foo="true"` instead of `data-foo`
-          obj[name] = val === true ? :true : val
+          obj[name] = val == true ? val.to_s : val
         end
       end
 
