@@ -2,6 +2,6 @@
 
 module Spark
   module Component
-    VERSION = "1.0.0.pre.alpha.7"
+    VERSION = "1.0.0.pre.alpha.8"
   end
 end

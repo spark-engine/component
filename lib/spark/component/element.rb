@@ -228,7 +228,7 @@ module Spark
         # Prevent an element method from overwriting an existing method
         def define_method_if_able(method_name, &block)
           # Protect instance methods which are crucial to components and elements
-          methods = [self, Element, Attribute, superclass]
+          methods = [self, Element, Attribute]
           methods << Integration.base_class if defined? Spark::Component::Integration
           methods.map! { |c| c.instance_methods(false) }
 
