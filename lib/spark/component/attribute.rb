@@ -67,7 +67,9 @@ module Spark
         attrs ||= {}
 
         self.class.attributes.each do |name, default|
-          value = attrs[name] || (!default.nil? ? default : nil)
+          default = (!default.nil? ? default : nil)
+          value = attrs[name].nil? ? default : attrs[name]
+
           if set?(value)
             instance_variable_set(:"@#{name}", value)
           end

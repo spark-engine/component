@@ -22,6 +22,11 @@ module Spark
       assert_equal :foo, component.attribute_b
     end
 
+    def test_attribute_false_overridde
+      component = AttributeComponent.new(foo: false)
+      assert_equal false, component.attribute_foo
+    end
+
     def test_attribute_validation_fails
       component = AttributeComponent.new
       exception = assert_raises(ActiveModel::ValidationError) do

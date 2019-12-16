@@ -5,6 +5,7 @@ class AttributeComponent < ActionView::Component::Base
   THEMES = %i[primary secondary alternate].freeze
 
   attribute :a, b: true
+  attribute foo: true
   attribute :theme, size: :medium
 
   validates_attr :a, presence: true
