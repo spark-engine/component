@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    spark-component (1.0.0.pre.alpha.9)
+    spark-component (1.0.0)
 
 GEM
   remote: https://rubygems.org/
