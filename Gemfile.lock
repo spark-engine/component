@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    spark-component (1.0.0)
+    spark-component (1.0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -42,7 +42,7 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
-    actionview-component (1.5.3)
+    actionview-component (1.6.1)
     activejob (6.0.1)
       activesupport (= 6.0.1)
       globalid (>= 0.3.6)

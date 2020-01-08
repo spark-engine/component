@@ -11,6 +11,7 @@ module Spark
       def add(hash)
         return self if hash.nil? || hash.keys.empty?
 
+        deep_compact!(hash)
         dasherize_keys(hash)
         merge!(hash)
         self
@@ -31,6 +32,17 @@ module Spark
       end
 
       private
+
+      def deep_compact!(hash)
+        hash.replace(deep_compact(hash))
+      end
+
+      def deep_compact(hash)
+        hash.select do |key, val|
+          val = deep_compact(val) if val.is_a?(Hash)
+          !(val.nil? || val.respond_to?(:empty?) && val.empty?)
+        end
+      end
 
       def dasherize_keys(hash)
         hash.merge!(hash.keys.each_with_object({}) do |key, obj|

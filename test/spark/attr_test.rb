@@ -34,6 +34,13 @@ module Spark
 
         assert_equal "foo-bar", hash.keys.first
       end
+
+      def test_does_not_allow_nil_attributes
+        hash = Attr.new
+        hash.add({ id: "hi", class: [], data: { foo: nil }, aria: nil, string: '' })
+
+        assert_equal({:id=>"hi"}, hash)
+      end
     end
   end
 end
