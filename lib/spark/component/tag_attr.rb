@@ -9,6 +9,8 @@ module Spark
       def add(hash)
         return self if hash.nil? || hash.keys.empty?
 
+        deep_compact!(hash)
+
         # Extract keys for special properties
         extracted = {
           aria: hash.delete(:aria),

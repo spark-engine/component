@@ -70,6 +70,13 @@ module Spark
 
         assert_equal %(aria-a="1" class="hi there" data-b="2" id="some_id"), tag_attr.to_s
       end
+
+      def test_does_not_allow_nil_attributes
+        hash = TagAttr.new
+        hash.add({ id: "hi", class: [], data: { foo: nil }, aria: nil, string: '' })
+
+        assert_equal({:id=>"hi"}, hash)
+      end
     end
   end
 end
