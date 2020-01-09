@@ -43,13 +43,7 @@ require "spark/component/tag_attr"
 #
 module Spark
   module Component
-    BASE_ATTRIBUTES = {
-      id: nil,
-      class: nil,
-      data: {},
-      aria: {},
-      html: {}
-    }.freeze
+    BASE_ATTRIBUTES = %i[id class data aria html].freeze
 
     module Attribute
       # All components and elements will support these attributes
@@ -108,12 +102,17 @@ module Spark
         end
       end
 
-      # Initialize tag attributes from BASE_ATTRIBUTES
+      # Initialize tag attributes
       #
-      # If a component or element has arguments defined as base attributes
-      # they will automatically be added to the tag_attrs
+      # If a component or element defines tag_attributes, aria_attributes, or data_attributes
+      # Automatically assign add arguments to tag_attrs
       def tag_attrs
-        @tag_attrs ||= TagAttr.new.add attr_hash(*BASE_ATTRIBUTES.keys)
+        return @tag_attrs if @tag_attrs
+
+        @tag_attrs = TagAttr.new.add(attr_hash(*self.class.tag_attributes))
+        @tag_attrs.add(aria: attr_hash(*self.class.aria_attributes))
+        @tag_attrs.add(data: attr_hash(*self.class.data_attributes))
+        @tag_attrs
       end
 
       # Easy reference a tag's classname
@@ -142,7 +141,10 @@ module Spark
 
       module ClassMethods
         def attributes
-          @attributes ||= Spark::Component::BASE_ATTRIBUTES.dup
+          # Set attributes default to a hash using keys defined by BASE_ATTRIBUTES
+          @attributes ||= Spark::Component::BASE_ATTRIBUTES.each_with_object({}) do |val, obj|
+            obj[val] = nil
+          end
         end
 
         # Sets attributes, accepts an array of keys, pass a hash to set default values
@@ -177,7 +179,9 @@ module Spark
           name = :"attribute_#{name}"
 
           if (choices = options.delete(:choices))
-            supported_choices = choices.map { |c| c.is_a?(String) ? c.to_sym : c.to_s }.concat(choices)
+            supported_choices = choices.map do |c|
+              c.is_a?(String) ? c.to_sym : c.to_s
+            end.concat(choices)
 
             choices = choices.map(&:inspect).to_sentence(last_word_connector: ", or ")
             message = "\"%<value>s\" is not valid. Options include: #{choices}."
@@ -186,6 +190,49 @@ module Spark
           end
 
           validates(name, options)
+        end
+
+        # Store attributes to be added to tag_attrs
+        def tag_attributes
+          @tag_attributes ||= BASE_ATTRIBUTES.dup
+        end
+
+        # Store attributes to be added to tag_attrs aria
+        def aria_attributes
+          @aria_attributes ||= []
+        end
+
+        # Store attributes to be added to tag_attrs data
+        def data_attributes
+          @data_attributes ||= []
+        end
+
+        # Add attribute(s) and automatically add to tag_attr
+        def tag_attribute(*args)
+          attr_object = hash_from_args(*args)
+
+          if (aria_object = attr_object.delete(:aria))
+            attribute(aria_object)
+            aria_attributes.concat(aria_object.keys)
+          end
+
+          if (data_object = attr_object.delete(:data))
+            attribute(data_object)
+            data_attributes.concat(data_object.keys)
+          end
+
+          attribute(attr_object)
+          tag_attributes.concat(attr_object.keys)
+        end
+
+        # Add attribute(s) and automatically add to tag_attr's aria hash
+        def aria_attribute(*args)
+          tag_attribute(aria: hash_from_args(*args))
+        end
+
+        # Add attribute(s) and automatically add to tag_attr's data hash
+        def data_attribute(*args)
+          tag_attribute(data: hash_from_args(*args))
         end
 
         private
@@ -198,6 +245,14 @@ module Spark
           # Namespace attribute methods to prevent collision with methods or elements
           define_method(:"attribute_#{name}") do
             instance_variable_get(:"@#{name}")
+          end
+        end
+
+        # Convert mixed arguments to a hash
+        # Example: (:a, :b, c: true) => { a: nil, b: nil, c: true }
+        def hash_from_args(*args)
+          args.each_with_object({}) do |arg, obj|
+            arg.is_a?(Hash) ? obj.merge!(arg) : obj[arg] = nil
           end
         end
       end

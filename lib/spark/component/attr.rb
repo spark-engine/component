@@ -38,9 +38,9 @@ module Spark
       end
 
       def deep_compact(hash)
-        hash.select do |key, val|
+        hash.reject do |_key, val|
           val = deep_compact(val) if val.is_a?(Hash)
-          !(val.nil? || val.respond_to?(:empty?) && val.empty?)
+          (val.nil? || val.respond_to?(:empty?) && val.empty?)
         end
       end
 
