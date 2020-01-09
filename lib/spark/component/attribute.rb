@@ -60,12 +60,39 @@ module Spark
       def initialize_attributes(attrs = nil)
         attrs ||= {}
 
+        # Filter out attributes which aren't defined by class method
+        attrs.select! { |key, _value| self.class.attributes.keys.include?(key) }
+
+        initialize_attribute_default_groups(attrs)
+
         self.class.attributes.each do |name, default|
           default = (!default.nil? ? default : nil)
           value = attrs[name].nil? ? default : attrs[name]
 
           if set?(value)
             instance_variable_set(:"@#{name}", value)
+          end
+        end
+      end
+
+      def initialize_attribute_default_groups(attrs)
+        self.class.attribute_default_groups.each do |group, group_options|
+          # Determine what group name is set for this attribute.
+          name = attrs[group] || self.class.attributes[group]
+
+          # Get defaults to set from group name
+          defaults = group_options[name]
+
+          next unless defaults
+          unless defaults.is_a?(Hash)
+            raise("In argument group `:#{name}`, value `#{defaults}` must be a hash.")
+          end
+
+          defaults.each do |key, value|
+            if attrs[key].nil?
+              attrs[key] = value
+              instance_variable_set(:"@#{key}", value)
+            end
           end
         end
       end
@@ -233,6 +260,14 @@ module Spark
         # Add attribute(s) and automatically add to tag_attr's data hash
         def data_attribute(*args)
           tag_attribute(data: hash_from_args(*args))
+        end
+
+        def attribute_default_group(object)
+          attribute_default_groups.merge!(object)
+        end
+
+        def attribute_default_groups
+          @attribute_default_groups ||= {}
         end
 
         private

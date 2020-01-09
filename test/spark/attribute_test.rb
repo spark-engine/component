@@ -174,6 +174,39 @@ module Spark
         assert_equal(tag_attrs, klass_instance.tag_attrs)
       end
 
+      def test_attribute_default_group_assigns_defaults
+        klass = base_class
+        klass.attribute bar: "toast", theme: :a
+
+        klass.attribute_default_group(theme: {
+                                        a: { bar: true, baz: false },
+                                        b: { baz: true }
+                                      })
+
+        expected = { bar: "true", theme: :a }
+        assert_equal expected, klass.new.attributes
+
+        klass_instance = klass.new(theme: :b)
+        expected = { bar: "toast", theme: :b }
+        assert_equal expected, klass_instance.attributes
+        assert_equal true, klass_instance.instance_variable_get(:"@baz")
+      end
+
+      def test_attribute_default_group_raises_an_error_for_improperly_formed_groups
+        klass = base_class
+        klass.attribute :theme
+
+        klass.attribute_default_group(theme: { test: true })
+
+        exception = assert_raises(RuntimeError) do
+          klass.new(theme: :test)
+        end
+
+        message = "In argument group `:test`, value `true` must be a hash."
+
+        assert_includes message, exception.message
+      end
+
       def test_validates_attrs_raises_exception
         klass = base_class
         klass.attribute :foo
