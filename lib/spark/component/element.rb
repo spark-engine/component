@@ -200,7 +200,7 @@ module Spark
 
         private
 
-        # If an element extends a component, extend that component's class and include the necessary modules
+        # If an element extends a component, extend that class and include necessary modules
         def extend_class(component, &config)
           base = Class.new(component || Spark::Component::Element::Base, &config)
           define_model_name(base) if defined?(ActiveModel)
@@ -211,12 +211,15 @@ module Spark
           base.define_singleton_method(:source_component) { component }
 
           # Override component when used as an element
-          base.include(Spark::Component::Integration::Element) if defined?(Spark::Component::Integration)
+          if defined?(Spark::Component::Integration)
+            base.include(Spark::Component::Integration::Element)
+          end
 
           base
         end
 
-        # ActiveModel validations require a model_name. This helps connect new classes to their proper model names.
+        # ActiveModel validations require a model_name.
+        # This connects new classes to their proper model names.
         def define_model_name(klass)
           klass.define_singleton_method(:model_name) do
             # try the current class, the parent class, or default to Spark::Component

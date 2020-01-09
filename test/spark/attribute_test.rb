@@ -25,7 +25,8 @@ module Spark
       end
 
       def test_has_default_attributes
-        assert_equal({ id: nil, class: nil, data: {}, aria: {}, html: {} }, base_class.attributes)
+        expected = { id: nil, class: nil, data: nil, aria: nil, html: nil }
+        assert_equal(expected, base_class.attributes)
       end
 
       def test_can_add_to_attributes
@@ -83,7 +84,7 @@ module Spark
         assert_equal({ a: 1, b: "true" }, klass_instance.attr_hash(:a, :b, :c, :id, :data))
       end
 
-      def test_tag_attrs_assignable_by_attributes
+      def test_base_attrs_assignable_by_attributes
         klass = base_class
 
         attrs = {
@@ -104,6 +105,47 @@ module Spark
           class: %w[bar baz],
           id: "foo", role: "button"
         }
+
+        assert_equal(tag_attrs, klass_instance.tag_attrs)
+      end
+
+      def test_tag_attributes_injects_arguments_into_tag_attrs
+        klass = base_class
+        klass.tag_attribute(:foo, bar: true)
+
+        klass_instance = klass.new(
+          foo: "hi",
+          bar: false
+        )
+
+        tag_attrs = {
+          foo: "hi",
+          bar: false
+        }
+
+        assert_equal(tag_attrs, klass_instance.tag_attrs)
+      end
+
+      def test_tag_attributes_supports_data_key
+        klass = base_class
+        klass.tag_attribute(data: { foo: nil, bar: true })
+
+        assert_equal({ data: { bar: "true" } }, klass.new.tag_attrs)
+
+        klass_instance = klass.new(foo: "hi", bar: false)
+        tag_attrs = { data: { foo: "hi", bar: false } }
+
+        assert_equal(tag_attrs, klass_instance.tag_attrs)
+      end
+
+      def test_tag_attributes_supports_aria_key
+        klass = base_class
+        klass.tag_attribute(aria: { foo: nil, bar: true })
+
+        assert_equal({ aria: { bar: "true" } }, klass.new.tag_attrs)
+
+        klass_instance = klass.new(foo: "hi", bar: false)
+        tag_attrs = { aria: { foo: "hi", bar: false } }
 
         assert_equal(tag_attrs, klass_instance.tag_attrs)
       end

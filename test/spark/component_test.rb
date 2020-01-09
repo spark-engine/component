@@ -58,13 +58,13 @@ module Spark
 
     def test_attribute_tags_in_template
       attrs = {
-        id: "foo", class: "bar",
-        data: { foo: "bar" },
-        aria: { label: "test" },
-        html: { role: "button" }
+        id: "a", class: "b",
+        data: { foo: "c" },
+        aria: { label: "d" },
+        html: { role: "e" }
       }
       result = render_inline(AttributeComponent, a: "present", **attrs)
-      expected = %(<div aria-label="test" class="bar" data-foo="bar" id="foo" role="button">present</div>)
+      expected = %(<div aria-label="d" class="b" data-foo="c" id="a" role="e">present</div>)
       assert_equal expected, get_html(result)
     end
 

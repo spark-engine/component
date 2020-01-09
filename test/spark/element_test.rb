@@ -14,7 +14,8 @@ module Spark
     def test_render_element
       get "/block"
       assert_response :success
-      assert_equal %(<div class="block"><span>content</span></div>), get_html(response.body, css: ".block")
+      expected = %(<div class="block"><span>content</span></div>)
+      assert_equal expected, get_html(response.body, css: ".block")
     end
 
     def test_element_parent
@@ -69,8 +70,12 @@ module Spark
     def test_render_element_config_extending_component
       get "/component_config"
       assert_response :success
-      assert_equal %(<div class="config">config_default</div>), get_html(response.body, css: ".config")
-      assert_equal %(<div class="method">success</div>), get_html(response.body, css: ".method")
+
+      expected = %(<div class="config">config_default</div>)
+      assert_equal expected, get_html(response.body, css: ".config")
+
+      expected = %(<div class="method">success</div>)
+      assert_equal expected, get_html(response.body, css: ".method")
     end
 
     def test_render_element_config_extending_component_validation_exception
