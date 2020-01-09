@@ -138,9 +138,33 @@ module Spark
         assert_equal(tag_attrs, klass_instance.tag_attrs)
       end
 
+      def test_data_attributes_injects_arguments_into_tag_attrs
+        klass = base_class
+        klass.data_attribute(:foo, bar: true)
+
+        assert_equal({ data: { bar: "true" } }, klass.new.tag_attrs)
+
+        klass_instance = klass.new(foo: "hi", bar: false)
+        tag_attrs = { data: { foo: "hi", bar: false } }
+
+        assert_equal(tag_attrs, klass_instance.tag_attrs)
+      end
+
       def test_tag_attributes_supports_aria_key
         klass = base_class
         klass.tag_attribute(aria: { foo: nil, bar: true })
+
+        assert_equal({ aria: { bar: "true" } }, klass.new.tag_attrs)
+
+        klass_instance = klass.new(foo: "hi", bar: false)
+        tag_attrs = { aria: { foo: "hi", bar: false } }
+
+        assert_equal(tag_attrs, klass_instance.tag_attrs)
+      end
+
+      def test_aria_attributes_injects_arguments_into_tag_attrs
+        klass = base_class
+        klass.aria_attribute(:foo, bar: true)
 
         assert_equal({ aria: { bar: "true" } }, klass.new.tag_attrs)
 
