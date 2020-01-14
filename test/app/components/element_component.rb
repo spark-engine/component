@@ -13,9 +13,15 @@ class ElementComponent < ActionView::Component::Base
     end
   end
 
+  element :simple_parent_el do
+    element :simple_child_el
+  end
+
   element :component_config_validation, component: AttributeComponent do
     validates_attr :a, numericality: { only_integer: true }
   end
+
+  element :h3
 
   def initialize(*)
     super

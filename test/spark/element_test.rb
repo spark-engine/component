@@ -99,5 +99,19 @@ module Spark
       assert_includes html, %(<li><div>2</div></li>)
       assert_includes html, %(<li><div>3</div></li>)
     end
+
+    def test_element_yields_if_nested_element_is_called
+      get "/component_with_nested_plain_elements"
+      assert_response :success
+      html = get_html(response.body)
+      assert_includes html, %(<div id="child">hello parent</div>)
+    end
+
+    def test_element_can_reference_its_own_name
+      get "/component_with_element_referencing_name"
+      assert_response :success
+      html = get_html(response.body)
+      assert_includes html, %(<h3>Title</h3>)
+    end
   end
 end

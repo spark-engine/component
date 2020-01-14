@@ -11,3 +11,7 @@
   = component_config_validation.yield
 - if with_elements.present?
   = with_elements.yield
+- if simple_parent_el && simple_parent_el.simple_child_el.present?
+    #child= simple_parent_el.simple_child_el.yield
+- if h3.present?
+  = content_tag(h3._name, h3.yield)
