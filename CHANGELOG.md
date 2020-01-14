@@ -1,5 +1,7 @@
-# v1.1.1 - 2020-01-14
+# v1.1.2 - 2020-01-14
+- Fix: Added render checking to component to prevent executing `render_self` more than once. 
 
+# v1.1.1 - 2020-01-14
 - Fix: When a nested element is referenced it will trigger the parent to yield
     its block, ensuring that the nested element reference will be instantiated
     if it is used in the parent's block.
