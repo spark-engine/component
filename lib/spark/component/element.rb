@@ -38,12 +38,13 @@ module Spark
       end
 
       def render_self
-        return @content if rendered?
+        # Guard with `rendered?` boolean in case render_block returns `nil`
+        return @render_self if rendered?
 
-        @content = render_block(@view_context, &_block)
+        @render_self = render_block(@view_context, &_block)
         validate! if defined?(ActiveModel::Validations)
         @rendered = true
-        @content
+        @render_self
       end
 
       def rendered?

@@ -34,7 +34,11 @@ module Spark
       end
 
       def render_self
-        render_in(@view_context, &@_block)
+        # Guard with `rendered?` boolean in case render_block returns `nil`
+        return @render_self if rendered?
+
+        @rendered = true
+        @render_self = render_in(@view_context, &@_block)
       end
 
       # Override class methods for components
