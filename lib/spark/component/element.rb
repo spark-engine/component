@@ -10,7 +10,7 @@ module Spark
       def self.included(base)
         base.extend(Spark::Component::Element::ClassMethods)
 
-        %i[_parent _block view_context].each do |name|
+        %i[_name _parent _block view_context].each do |name|
           base.define_method(:"#{name}=") { |val| instance_variable_set(:"@#{name}", val) }
           base.define_method(:"#{name}")  { instance_variable_get(:"@#{name}") }
         end
@@ -25,6 +25,7 @@ module Spark
         #  - view_context, sets the view context for an element (in Rails)
         #
         unless attrs.nil? || attrs.empty?
+          @_name        = attrs.delete(:_name)
           @_parent      = attrs.delete(:_parent)
           @_block       = attrs.delete(:_block)
           @view_context = attrs.delete(:_view)
@@ -37,11 +38,16 @@ module Spark
       end
 
       def render_self
-        return @content unless @content.nil?
+        return @content if rendered?
 
         @content = render_block(@view_context, &_block)
         validate! if defined?(ActiveModel::Validations)
+        @rendered = true
         @content
+      end
+
+      def rendered?
+        @rendered == true
       end
 
       def render_block(view, &block)
@@ -53,7 +59,11 @@ module Spark
       end
 
       def present?
-        !self.yield.nil?
+        !blank?
+      end
+
+      def blank?
+        self.yield.nil? || self.yield.strip.empty?
       end
 
       private
@@ -169,15 +179,22 @@ module Spark
         #
         def define_element(name:, plural:, multiple:,  klass:)
           define_method_if_able(name) do |attributes = nil, &block|
-            return get_element_variable(multiple ? plural : name) unless block || attributes
+            # When initializing an element, blocks or arguments are passed.
+            # If an element is being referenced without these, it will return its instance
+            # This allows the elemnet method to initailize the object and return its instance
+            # for template rendering.
+            unless block || attributes
+
+              # If an element is called, it will only exist if its parent's block has been exectued
+              # Be sure the block has been executed so that sub elements are initialized
+              self.yield if is_a?(Spark::Component::Element::Base) && !rendered?
+
+              return get_element_variable(multiple ? plural : name)
+            end
 
             attributes ||= {}
             attributes = merge_element_attribute_default(name, attributes)
-            attributes.merge!(
-              _parent: self,
-              _block: block,
-              _view: view_context
-            )
+            attributes.merge!(_name: name, _parent: self, _block: block, _view: view_context)
 
             element = klass.new(attributes)
 

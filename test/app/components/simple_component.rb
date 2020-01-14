@@ -1,7 +1,7 @@
 class SimpleComponent < ActionView::Component::Base
   include Spark::Component
 
-  def initilize(*)
+  def initialize(*)
     super
   end
 end
