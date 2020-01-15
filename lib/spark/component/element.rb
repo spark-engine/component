@@ -111,8 +111,11 @@ module Spark
 
       module ClassMethods
         def inherited(child)
-          child.elements.replace(elements.merge(child.elements))
-          child.attributes.replace(attributes.merge(child.attributes))
+          child.elements.replace(elements)
+          child.attributes.replace(attributes)
+          child.tag_attributes.replace(tag_attributes)
+          child.data_attributes.replace(data_attributes)
+          child.aria_attributes.replace(aria_attributes)
         end
 
         def elements
