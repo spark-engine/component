@@ -1,3 +1,6 @@
+# v1.1.3 - 2020-01-15
+- Fix: Extending a component will now extend its class defined tag attributes, aria attributes, and data attributes.
+
 # v1.1.2 - 2020-01-14
 - Fix: Added render checking to component to prevent executing `render_self` more than once. 
 

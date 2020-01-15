@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "spark/component/element"
 
 module Spark
   class ElementIntegrationTest < ActionDispatch::IntegrationTest
@@ -65,6 +64,49 @@ module Spark
       assert_response :success
       assert_equal %(<div class="block">block</div>), get_html(response.body, css: ".block")
       assert_equal %(<strong>hi</strong>), get_html(response.body, css: "strong")
+    end
+
+    def test_inherit_tag_attributes_when_extending_class
+      klass = Class.new do
+        include Component::Attribute
+        include Component::Element
+        tag_attribute zeep: :zorp
+      end
+
+      extended = Class.new(klass)
+      instance = extended.new
+
+      assert extended.tag_attributes.include?(:zeep)
+
+      assert_equal :zorp, instance.tag_attrs[:zeep]
+    end
+
+    def test_inherit_aria_attributes_when_extending_class
+      klass = Class.new do
+        include Component::Attribute
+        include Component::Element
+        aria_attribute meep: :morp
+      end
+
+      extended = Class.new(klass)
+      instance = extended.new
+
+      assert extended.aria_attributes.include?(:meep)
+      assert_equal :morp, instance.aria[:meep]
+    end
+
+    def test_inherit_data_attributes_when_extending_class
+      klass = Class.new do
+        include Component::Attribute
+        include Component::Element
+        data_attribute bleep: :blorp
+      end
+
+      extended = Class.new(klass)
+      instance = extended.new
+
+      assert extended.data_attributes.include?(:bleep)
+      assert_equal :blorp, instance.data[:bleep]
     end
 
     def test_render_element_config_extending_component
