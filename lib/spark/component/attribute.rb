@@ -75,12 +75,34 @@ module Spark
         end
       end
 
+      # Takes attributes passed to a component or element and assigns values to other
+      # attributes as defined in their group.
+      #
+      # For example, with an attribute group:
+      #   theme: {
+      #     notice: { icon: "message", color: "blue" }
+      #     error: { icon: "error", color: "red" }
+      #   }
+      #
+      # If the attributes include `theme: :notice`, the icon and color attributes
+      # would default to "message" and "blue", but could be overriden if the user
+      # set values for them.
+      #
       def initialize_attribute_default_groups(attrs)
         self.class.attribute_default_groups.each do |group, group_options|
           # Determine what group name is set for this attribute.
+          # In the above example the group would be `theme` and the name
+          # would be the value passed for `theme`, or its default value.
+          #
+          # So `name` might be `:notice`.
           name = attrs[group] || self.class.attributes[group]
 
+          # Normalize name for hash lookup. to_s.to_sym converts booleans as well.
+          name = name.to_s.to_sym unless name.nil?
+
           # Get defaults to set from group name
+          # In the above example, if the name were `notice` this would be the hash
+          # `{ icon: "message", color: "blue" }`
           defaults = group_options[name]
 
           next unless defaults

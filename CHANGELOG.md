@@ -1,3 +1,7 @@
+# v1.1.4 - 2020-01-28
+- Fix: attrtibute_default_group now accepts booleans and normalizes keys.
+- Fix: element_attribute_default now merges attributes.
+
 # v1.1.3 - 2020-01-15
 - Fix: Extending a component will now extend its class defined tag attributes, aria attributes, and data attributes.
 

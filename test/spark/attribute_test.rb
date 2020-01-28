@@ -192,6 +192,21 @@ module Spark
         assert_equal true, klass_instance.instance_variable_get(:"@baz")
       end
 
+      def test_attribute_default_group_with_boolean_keys
+        klass = base_class
+        klass.attribute :foo
+
+        klass.attribute_default_group(foo: {
+                                        true: { bar: true, baz: false } # rubocop:disable Lint/BooleanSymbol
+                                      })
+
+        klass_instance = klass.new(foo: true)
+        expected = { foo: "true" }
+        assert_equal expected, klass_instance.attributes
+        assert_equal true, klass_instance.instance_variable_get(:"@bar")
+        assert_equal false, klass_instance.instance_variable_get(:"@baz")
+      end
+
       def test_attribute_default_group_raises_an_error_for_improperly_formed_groups
         klass = base_class
         klass.attribute :theme
