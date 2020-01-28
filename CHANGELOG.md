@@ -1,3 +1,6 @@
+# v1.1.5 - 2020-01-28
+- Fix: attrtibute_default_groups are now inherited when extending a component.
+
 # v1.1.4 - 2020-01-28
 - Fix: attrtibute_default_group now accepts booleans and normalizes keys.
 - Fix: element_attribute_default now merges attributes.

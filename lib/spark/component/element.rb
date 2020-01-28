@@ -117,6 +117,7 @@ module Spark
           child.tag_attributes.replace(tag_attributes)
           child.data_attributes.replace(data_attributes)
           child.aria_attributes.replace(aria_attributes)
+          child.attribute_default_groups.replace(attribute_default_groups)
         end
 
         def elements

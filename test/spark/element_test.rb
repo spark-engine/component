@@ -99,6 +99,27 @@ module Spark
       klass = Class.new do
         include Component::Attribute
         include Component::Element
+        attribute bar: "toast", theme: :a
+
+        attribute_default_group(theme: {
+                                  a: { bar: true, baz: false },
+                                  b: { baz: true }
+                                })
+      end
+
+      extended = Class.new(klass)
+      instance = extended.new
+
+      instance = extended.new(theme: :b)
+      expected = { bar: "toast", theme: :b }
+      assert_equal expected, instance.attributes
+      assert_equal true, instance.instance_variable_get(:"@baz")
+    end
+
+    def test_inherit_default_attribute_groups_when_extending_class
+      klass = Class.new do
+        include Component::Attribute
+        include Component::Element
         data_attribute bleep: :blorp
       end
 
